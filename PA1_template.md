@@ -5,6 +5,7 @@
 
 
 ```r
+library(stringr)
 ## File with all data
 Steps <- read.csv("activity.csv")
 
@@ -47,29 +48,20 @@ median(dataTotal$steps)
 ## What is the average daily activity pattern?
 
 ```r
+## Removes NA to not interfere in mean
+StepsnoNA <- na.omit(Steps)
+
+## take the mean of intervals
+dataMean <- aggregate(. ~ interval, data=StepsnoNA, mean)
+
+## convert interval to POSIXct
+dataMean$interval <- as.POSIXct(str_pad(dataMean$interval,4,pad="0"), format="%H%M")
+
 ## Asked histogram of steps per day
-hist(dataTotal$steps, breaks = lines, col = "red", main = "Histogram Total Steps per day", xlab = "" )
+plot(dataMean$interval,dataMean$steps, type = "l", main = "Average Activity by Time", xlab = "Time", ylab="Steps in average" )
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
-
-```r
-## mean of the steps per day
-mean(dataTotal$steps)
-```
-
-```
-## [1] 10766.19
-```
-
-```r
-## median of the steps per day
-median(dataTotal$steps)
-```
-
-```
-## [1] 10765
-```
 
 
 ## Imputing missing values
